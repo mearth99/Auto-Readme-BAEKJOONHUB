@@ -67,7 +67,7 @@ def get_problem_rank(level: str) -> tuple[str, int]:
 def extract_problem_info(content: str, readme_path: str) -> Optional[Problem]:
     """README.md 파일에서 문제 정보를 추출"""
     # 제목 추출
-    title_pattern = r'# \[(.*?)\] (.*?) - (\d+)'
+    title_pattern = r'# \[(.*?)\] (.*?)(?:\s*-\s*\d+\s*)*-\s*(\d+)(?:\s|$)'
     title_match = re.search(title_pattern, content)
     
     if not title_match:
