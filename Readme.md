@@ -17,6 +17,7 @@
 ## Auto Make Readme 기능
 
 1. 전체 폴더 탐색: python README.py all 또는 python3 README.py all
+	<br/>
 	![](./image/gitpython.png)
 	<br/> git 관련 함수를 설치한다. 
 	![](./image/local.png)
