@@ -68,7 +68,10 @@ def extract_problem_info(content: str, readme_path: str) -> Optional[Problem]:
     """README.md 파일에서 문제 정보를 추출"""
     # 제목 추출
     title_pattern = r'# \[(.*?)\] (.*?)(?:\s*-\s*\d+\s*)*-\s*(\d+)(?:\s|$)'
+<<<<<<< HEAD
     acmicpc_pattern = r'acmicpc\.net'
+=======
+>>>>>>> 90812688eb1fda813a0c9fd8538c44d2c2afc6f7
     title_match = re.search(title_pattern, content)
     acmicpc = 0
     if re.search(acmicpc_pattern, content):
