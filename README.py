@@ -60,7 +60,7 @@ def get_problem_rank(level: str, acmicpc) -> tuple[str, int]:
                 sub_rank = (6 - roman_values.get(tier, 0)) * 0.1
                 return ('백준', base_rank + sub_rank)
         
-    if re.match(r'^D[0-9]$', level):
+    if re.match(r'^(?:D[0-9]|Unrated)$', level) and acmicpc==0:
         return ('SWEA', level_ranks['SWEA'].get(level, -1))
     return ('Unknown', 0)
 
@@ -69,6 +69,7 @@ def extract_problem_info(content: str, readme_path: str) -> Optional[Problem]:
     # 제목 추출
     title_pattern = r'# \[(.*?)\] (.*?)(?:\s*-\s*\d+\s*)*-\s*(\d+)(?:\s|$)'
     acmicpc_pattern = r'acmicpc\.net'
+
     title_match = re.search(title_pattern, content)
     acmicpc = 0
     if re.search(acmicpc_pattern, content):
