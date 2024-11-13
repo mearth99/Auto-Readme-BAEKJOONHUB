@@ -28,7 +28,7 @@ class Problem:
         # rank가 같은 경우 문제 번호로 비교
         return int(self.number) < int(other.number)
 
-def get_problem_rank(level: str) -> tuple[str, int]:
+def get_problem_rank(level: str, acmicpc) -> tuple[str, int]:
     """문제의 출처와 레벨 순위를 반환"""
     level_ranks = {
         '백준': {
@@ -44,21 +44,21 @@ def get_problem_rank(level: str) -> tuple[str, int]:
     
     # SWEA D2 형식
     
-    
     # 프로그래머스 level 2 형식
     if level.lower().startswith('level'):
         level_num = level.split()[-1]
         return ('프로그래머스', level_ranks['프로그래머스'].get(level_num, -1))
     
     # 백준 Bronze II 형식
-    for boj_level in ['Unrated', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Ruby']:  # Diamond를 추가
-        if boj_level in level:
-            roman_values = {'I': 5, 'II': 4, 'III': 3, 'IV': 2, 'V': 1}
-            tier = level.split()[-1]
-            base_rank = level_ranks['백준'][boj_level]
-            # 세부 등급을 역순으로 계산 (V가 가장 높음)
-            sub_rank = (6 - roman_values.get(tier, 0)) * 0.1
-            return ('백준', base_rank + sub_rank)
+    if acmicpc == 1 :
+        for boj_level in ['Unrated', 'Bronze', 'Silver', 'Gold', 'Platinum', 'Diamond', 'Ruby']:
+            if boj_level in level:
+                roman_values = {'I': 5, 'II': 4, 'III': 3, 'IV': 2, 'V': 1}
+                tier = level.split()[-1]
+                base_rank = level_ranks['백준'][boj_level]
+                # 세부 등급을 역순으로 계산 (V가 가장 높음)
+                sub_rank = (6 - roman_values.get(tier, 0)) * 0.1
+                return ('백준', base_rank + sub_rank)
         
     if re.match(r'^D[0-9]$', level):
         return ('SWEA', level_ranks['SWEA'].get(level, -1))
@@ -68,8 +68,11 @@ def extract_problem_info(content: str, readme_path: str) -> Optional[Problem]:
     """README.md 파일에서 문제 정보를 추출"""
     # 제목 추출
     title_pattern = r'# \[(.*?)\] (.*?)(?:\s*-\s*\d+\s*)*-\s*(\d+)(?:\s|$)'
+    acmicpc_pattern = r'acmicpc\.net'
     title_match = re.search(title_pattern, content)
-    
+    acmicpc = 0
+    if re.search(acmicpc_pattern, content):
+        acmicpc = 1
     if not title_match:
         return None
         
@@ -80,12 +83,13 @@ def extract_problem_info(content: str, readme_path: str) -> Optional[Problem]:
     category_pattern = r'### 분류\s*\n\s*(.*?)\s*\n'
     category_match = re.search(category_pattern, content)
     
+    
     if category_match:
         raw_categories = category_match.group(1).strip()
         categories = [cat.strip() for cat in raw_categories.split(',') if cat.strip()]
     
     # 출처와 랭크 계산
-    platform, rank = get_problem_rank(level)
+    platform, rank = get_problem_rank(level,acmicpc)
     
     return Problem(
         level=level,
